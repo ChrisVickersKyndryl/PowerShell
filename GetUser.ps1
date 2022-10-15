@@ -13,7 +13,12 @@ gci -force 'C:\Users'-ErrorAction SilentlyContinue | ? { $_ -is [io.directoryinf
 }
 
 foreach ($i in $array){
-  Get-ADUser -Filter "Name -eq $i.name" -SearchBase "DC=AppNC" | foreach { $i.enabled = $_.Enabled }
+  Get-ADUser -Filter "Name -eq $i.name" -SearchBase "DC=AppNC" | foreach {
+    $i.enabled = $_.Enabled
+    
+    # DELETES FILES IF THE USER IS 
+    # Remove-Item 'D:\temp\Test Folder' -Recurse
+  }
 }
 
 echo $listOfObj
