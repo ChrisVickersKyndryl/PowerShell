@@ -1,4 +1,27 @@
+# Folder list
 $listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
+
+# Get folder size and output as a table
+gci -force 'C:\Users'-ErrorAction SilentlyContinue | ? { $_ -is [io.directoryinfo] } | % {
+  $len = 0
+  echo "Before"
+  gci -recurse -force $_.fullname -ErrorAction SilentlyContinue | % { $len += $_.length }
+  echo "After"
+  $folder = @{}
+  $folder.name = $_.name
+  $folder.fullname = $_.fullname
+  $folder.size = [string]$len
+  
+  $listOfObj.Add($folder)
+}
+
+echo $listOfObj
+
+# Get user details for each folder
+for($i=1; $i -lt $listOfObj.Count; $i++) {
+  Get-ADUser -Filter "Name -eq $listOfObj[i].name" -SearchBase "DC=AppNC" | foreach { $listOfObj[i].enabled = $_.Enabled }
+}
+
 $person = @{}
 $person.city = 'Austin'
 $person.state = 'TX'
