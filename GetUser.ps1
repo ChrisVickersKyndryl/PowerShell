@@ -43,8 +43,8 @@ foreach ($i in $listOfObj) {
   select lastLogon, EmailAddress, Enabled, UserPrincipleName |
   % {
     $i.enabled = $_.Enabled
-    $i.emailAddress = $_.EmailAddress
-    $i.lastLogonDate = $_.LastLogon
+    # $i.emailAddress = $_.EmailAddress
+    # $i.lastLogonDate = $_.LastLogon
   }
     
   # DELETES FILES IF THE USER IS DISABLED
