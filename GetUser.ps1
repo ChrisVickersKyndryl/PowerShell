@@ -4,15 +4,16 @@ $listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
 # Get folder size and output as a table
 gci -force 'C:\Users'-ErrorAction SilentlyContinue | ? { $_ -is [io.directoryinfo] } | % {
   $len = 0
-  echo "Before"
   gci -recurse -force $_.fullname -ErrorAction SilentlyContinue | % { $len += $_.length }
-  echo "After"
   $folder = @{}
   $folder.name = $_.name
   $folder.fullname = $_.fullname
-  $folder.size = [string]$len
-  
-  $listOfObj.Add($folder)
+  $folder.size = $len
+  [void]$listOfObj.Add($folder)
+}
+
+foreach ($i in $array){
+  Get-ADUser -Filter "Name -eq $i.name" -SearchBase "DC=AppNC" | foreach { $i.enabled = $_.Enabled }
 }
 
 echo $listOfObj
