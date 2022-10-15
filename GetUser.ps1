@@ -36,8 +36,6 @@ Where-Object { $_.Name -notin $excludedFolders } |
   [void]$listOfObj.Add($folder)
 }
 
-echo $listOfObj
-
 # Loop through list of folders
 foreach ($i in $listOfObj) {
   # Get user that matches the folder name
