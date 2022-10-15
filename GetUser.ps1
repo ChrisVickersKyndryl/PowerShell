@@ -40,9 +40,9 @@ foreach ($i in $array) {
     
   # Check if folder is too large
   if($i.size -lt $maxSize)
-    $i.too_large = "True"
+    { $i.too_large = "True" }
   else
-    $i.too_large = "False"
+    { $i.too_large = "False" }
 }
 
 # Output response as json
