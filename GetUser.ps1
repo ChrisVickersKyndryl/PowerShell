@@ -6,6 +6,11 @@ $listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
 # Max size of folder
 $maxSize = 20000000
 
+#Excluded folders
+$excludedFolder = @(
+  "All Users"
+)
+
 # Check if module exists. If it does not, exit
 if (!(Get-Module -ListAvailable -Name ActiveDirectory))
 {
@@ -14,7 +19,7 @@ if (!(Get-Module -ListAvailable -Name ActiveDirectory))
 }
 
 # Get folder size and name
-gci -force 'C:\Users'-ErrorAction SilentlyContinue | ? { $_ -is [io.directoryinfo] } | % {
+gci -force 'C:\Users'-ErrorAction SilentlyContinue -exclude "c:\Users\All Users" | ? { $_ -is [io.directoryinfo] } | % {
   $len = 0
   gci -recurse -force $_.fullname -ErrorAction SilentlyContinue | % { $len += $_.length }
   $folder = @{}
