@@ -21,7 +21,7 @@ gci -force 'C:\Users'-ErrorAction SilentlyContinue | ? { $_ -is [io.directoryinf
   $folder.folderName = $_.Name
   $folder.Name = $_.Name
   $folder.fullAddress = $_.fullname
-  $folder.size = $len
+  $folder.folderSize = $len
   [void]$listOfObj.Add($folder)
 }
 
@@ -43,7 +43,7 @@ foreach ($i in $array) {
   #}
     
   # Check if folder is too large
-  if($i.size -lt $maxSize)
+  if($i.folderSize -gt $maxSize)
     { $i.too_large = "True" }
   else
     { $i.too_large = "False" }
