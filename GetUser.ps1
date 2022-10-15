@@ -39,11 +39,12 @@ Where-Object { $_.Name -notin $excludedFolders } |
 # Loop through list of folders
 foreach ($i in $listOfObj) {
   # Get user that matches the folder name
-  Get-ADUser -Filter "Name -eq '$($i.folderName)'" <#-SearchBase "DC=AppNC"#> | foreach {
+  Get-ADUser -Filter "Name -eq '$($i.folderName)'" <#-SearchBase "DC=AppNC"#> |
+  select lastLogon, EmailAddress, Enabled, UserPrincipleName |
+  % {
     $i.enabled = $_.Enabled
     $i.emailAddress = $_.EmailAddress
-    $i.lastLogonDate = $_.LastLogonDate
-    $i.name = $_.Name
+    $i.lastLogonDate = $_.LastLogon
   }
     
   # DELETES FILES IF THE USER IS DISABLED
