@@ -1,14 +1,17 @@
 #https://www.jonathanmedd.net/2019/07/returning-data-from-powershell-scripts-to-be-consumed-by-ansible-playbooks.html
 
+# List of folders with user details
+$listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
+
+# Max size of folder
+$maxSize = 20000000
+
 # Check if module exists. If it does not, exit
 if (-Not Get-Module -ListAvailable -Name ActiveDirectory)
 {
   Write-Host "Module does not exist"
   exit
 }
-
-# List of folders with user details
-$listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
 
 # Get folder size and output as a table
 gci -force 'C:\Users'-ErrorAction SilentlyContinue | ? { $_ -is [io.directoryinfo] } | % {
@@ -36,7 +39,7 @@ foreach ($i in $array) {
   #}
     
   # Check if folder is too large
-  if($i.size -lt 20000000)
+  if($i.size -lt $maxSize)
     $i.too_large = "True"
   else
     $i.too_large = "False"
