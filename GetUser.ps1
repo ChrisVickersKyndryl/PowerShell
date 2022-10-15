@@ -13,7 +13,7 @@ if (!(Get-Module -ListAvailable -Name ActiveDirectory))
   return
 }
 
-# Get folder size and output as a table
+# Get folder size and name
 gci -force 'C:\Users'-ErrorAction SilentlyContinue | ? { $_ -is [io.directoryinfo] } | % {
   $len = 0
   gci -recurse -force $_.fullname -ErrorAction SilentlyContinue | % { $len += $_.length }
