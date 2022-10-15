@@ -14,5 +14,6 @@ $list | Format-Wide -Property {$_} -Column 3 -Force
 # Get user details for each folder
 for($i=2; $i -lt $list.Count; $i+=3) {
   echo $list[$i]
+  # Name probably needs to be changed
   # Get-ADUser -Filter "Name -eq 'ChewDavid'" -SearchBase "DC=AppNC" -Properties "mail" -Server lds.Fabrikam.com:50000
 }
