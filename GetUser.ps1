@@ -1,3 +1,13 @@
+$listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
+$person = @{}
+$person.city = 'Austin'
+$person.state = 'TX'
+
+$listOfObj.Add($person)
+
+echo $listOfObj[0].city
+
+
 # Get folder size and output as a table
 $list = New-Object Collections.Generic.List[string]
 gci -force 'C:\Users'-ErrorAction SilentlyContinue | ? { $_ -is [io.directoryinfo] } | % {
