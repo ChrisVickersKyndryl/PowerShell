@@ -10,7 +10,7 @@ $maxSize = 20000000
 if (!(Get-Module -ListAvailable -Name ActiveDirectory))
 {
   Write-Host "Module does not exist"
-  exit
+  return
 }
 
 # Get folder size and output as a table
