@@ -23,7 +23,7 @@ if (!(Get-Module -ListAvailable -Name ActiveDirectory))
 }
 
 # Get folder size and name
-gci -force 'C:\Users'-ErrorAction SilentlyContinue -exclude "c:\Users\All Users" |
+gci -force 'C:\Users'-ErrorAction SilentlyContinue |
 Where-Object { $_.Name -notin $excludedFolders } |
 ? { $_ -is [io.directoryinfo] } | % {
   $len = 0
