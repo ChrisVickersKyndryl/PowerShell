@@ -18,16 +18,18 @@ gci -force 'C:\Users'-ErrorAction SilentlyContinue | ? { $_ -is [io.directoryinf
   $len = 0
   gci -recurse -force $_.fullname -ErrorAction SilentlyContinue | % { $len += $_.length }
   $folder = @{}
-  $folder.name = $_.name
-  $folder.fullname = $_.fullname
+  $folder.name = $_.Name
+  # $folder.fullname = $_.GivenName
   $folder.size = $len
   [void]$listOfObj.Add($folder)
 }
 
+echo $listOfObj
+
 # Loop through list of folders
 foreach ($i in $array) {
   # Get user that matches the folder name
-  Get-ADUser -Filter "Name -eq $i.name" -SearchBase "DC=AppNC" | foreach {
+  Get-ADUser -Filter "Name -eq $i.Name" <#-SearchBase "DC=AppNC"#> | foreach {
     $i.enabled = $_.Enabled
     $i.email = $_.Email
     $i.name = $_.Name
