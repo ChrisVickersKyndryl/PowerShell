@@ -16,5 +16,5 @@ for($i=2; $i -lt $list.Count; $i+=3) {
   echo $list[$i]
   # Name probably needs to be changed
   # Get-ADUser -Filter "Name -eq 'ChewDavid'" -SearchBase "DC=AppNC" -Properties "mail" -Server lds.Fabrikam.com:50000
-  # | Select-Object -Property Name, Id
+  # | Select-Object -Property SamAccountName,Enabled
 }
