@@ -7,8 +7,11 @@ $listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
 $maxSize = 20000000
 
 #Excluded folders
-$excludedFolder = @(
-  "All Users"
+$excludedFolders = @(
+  "All Users",
+  "Administrator",
+  "Default",
+  "Public"
 )
 
 # Check if module exists. If it does not, exit
@@ -20,7 +23,7 @@ if (!(Get-Module -ListAvailable -Name ActiveDirectory))
 
 # Get folder size and name
 gci -force 'C:\Users'-ErrorAction SilentlyContinue -exclude "c:\Users\All Users"
-| Where-Object { $_.Name -notin @("All Users", "Administrator", "Default", "Public")}
+| Where-Object { $_.Name -notin $excludedFolders }
 | ? { $_ -is [io.directoryinfo] } | % {
   $len = 0
   gci -recurse -force $_.fullname -ErrorAction SilentlyContinue | % { $len += $_.length }
