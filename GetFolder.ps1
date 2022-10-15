@@ -43,7 +43,7 @@ foreach ($i in $listOfObj) {
   select lastLogon, EmailAddress, Enabled, UserPrincipleName |
   % {
     $i.enabled = $_.Enabled
-    # $i.emailAddress = $_.EmailAddress
+    $i.emailAddress = $_.mail
     # $i.lastLogonDate = $_.LastLogon
   }
     
