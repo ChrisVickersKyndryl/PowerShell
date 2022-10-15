@@ -7,7 +7,7 @@ $listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
 $maxSize = 20000000
 
 # Check if module exists. If it does not, exit
-if (-Not Get-Module -ListAvailable -Name ActiveDirectory)
+if (!(Get-Module -ListAvailable -Name ActiveDirectory))
 {
   Write-Host "Module does not exist"
   exit
