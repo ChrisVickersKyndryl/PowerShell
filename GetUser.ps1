@@ -41,7 +41,7 @@ echo $listOfObj
 # Loop through list of folders
 foreach ($i in $listOfObj) {
   # Get user that matches the folder name
-  Get-ADUser -Filter "Name -eq $i.folderName" <#-SearchBase "DC=AppNC"#> | foreach {
+  Get-ADUser -Filter "Name -eq '$($i.folderName)'" <#-SearchBase "DC=AppNC"#> | foreach {
     $i.enabled = $_.Enabled
     $i.emailAddress = $_.EmailAddress
     $i.lastLogonDate = $_.LastLogonDate
