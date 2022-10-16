@@ -16,7 +16,7 @@ $excludedFolders = @(
 )
 
 # This gets the current time as a string
-$dateTwoMonthsAgo = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+# $dateTwoMonthsAgo = ((Get-Date).AddMonths(-2)).tofiletime()
 
 # Check if module exists. If it does not, exit
 if (!(Get-Module -ListAvailable -Name ActiveDirectory))
