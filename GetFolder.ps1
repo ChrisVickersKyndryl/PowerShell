@@ -63,7 +63,7 @@ foreach ($i in $listOfObj) {
     $i.enabled = $_.Enabled
     $i.emailAddress = $_.mail
     $i.lastLogonDate = [string]$_.lastLogonDate
-    $i.lastLogonDateUnix = [string]$_.lastLogonDate
+    $i.lastLogonDateDateObject = $_.lastLogonDate
     $i.lastLogonTimestamp = $_.lastLogonTimestamp
   }
     
