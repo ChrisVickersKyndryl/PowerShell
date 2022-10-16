@@ -6,7 +6,7 @@ $listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
 # Max size of folder
 $maxSize = 20000000
 
-#Excluded folders
+#Excluded folders. These folders will not be checked
 $excludedFolders = @(
   "All Users",
   # "Administrator",
