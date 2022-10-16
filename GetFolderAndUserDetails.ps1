@@ -1,11 +1,7 @@
 #https://www.jonathanmedd.net/2019/07/returning-data-from-powershell-scripts-to-be-consumed-by-ansible-playbooks.html
 
-# Check if module exists. If it does not, exit
-if (!(Get-Module -ListAvailable -Name ActiveDirectory))
-{
-  Write-Host "Module does not exist"
-  return
-}
+# Check if module exists. If it does not, exit and return message
+if (!(Get-Module -ListAvailable -Name ActiveDirectory)) { return  "Module does not exist" }
 
 # List of folders with user details
 $listOfObj = New-Object -TypeName 'System.Collections.ArrayList';
