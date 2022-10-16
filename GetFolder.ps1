@@ -9,7 +9,7 @@ $maxSize = 20000000
 #Excluded folders
 $excludedFolders = @(
   "All Users",
-  "Administrator",
+  # "Administrator",
   "Default",
   "Public",
   "Default User"
@@ -39,12 +39,11 @@ Where-Object { $_.Name -notin $excludedFolders } |
 # Loop through list of folders
 foreach ($i in $listOfObj) {
   # Get user that matches the folder name
-  Get-ADUser -Filter "Name -eq '$($i.folderName)'" <#-SearchBase "DC=AppNC"#> |
-  select lastLogon, EmailAddress, Enabled, UserPrincipleName |
-  % {
+  Get-ADUser -Filter "Name -eq '$($i.folderName)'" -Properties * <#-SearchBase "DC=AppNC"#> | % {
     $i.enabled = $_.Enabled
     $i.emailAddress = $_.mail
-    $i.lastLogonDate = $_.lastLogonTimestamp
+    $i.lastLogonDate = $_.lastLogonDate
+    $i.lastLogonTimestamp = $_.lastLogonTimestamp
   }
     
   # DELETES FILES IF THE USER IS DISABLED
