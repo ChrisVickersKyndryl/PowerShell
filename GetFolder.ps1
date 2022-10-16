@@ -15,6 +15,22 @@ $excludedFolders = @(
   "Default User"
 )
 
+#Get date time now as unix seconds
+$timeNow = ([DateTimeOffset]$(Get-Date)).ToUnixTimeSeconds()
+echo $timeNow
+
+$secondsPast = ([DateTimeOffset]$(Get-Date).AddMonths(-2)).ToUnixTimeSeconds()
+echo $secondsPast
+
+if($timeNow -lt $secondsPast)
+{
+  echo "Was bigger"
+}
+else
+{
+  echo "Was not bigger"
+}
+
 # Check if module exists. If it does not, exit
 if (!(Get-Module -ListAvailable -Name ActiveDirectory))
 {
@@ -46,10 +62,11 @@ foreach ($i in $listOfObj) {
     $i.lastLogonTimestamp = $_.lastLogonTimestamp
   }
     
-  # DELETES FILES IF THE USER IS DISABLED
-  # if ($i.enabled -eq "False") {
+  # DELETES FILES IF THE USER IS DISABLED AND LAST LOGGED ON LONGER THAN 2 MONTHS AGO
+  # if ($i.lastLogonTimestamp - lt ([DateTimeOffset]$(Get-Date).AddMonths(-2)).ToUnixTimeSeconds() ) -and
+  # ($i.enabled -eq "False") {
   #   Remove-Item 'D:\temp\Test Folder' -Recurse
-  #}
+  # }
     
   # Check if folder is too large
   if($i.folderSize -gt $maxSize)
