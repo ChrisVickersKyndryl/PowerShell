@@ -54,7 +54,7 @@ foreach ($i in $listOfObj) {
   #
   # if ($i.lastLogonTimestamp -lt $dateTwoMonthsAgo ) -and
   # ($i.enabled -eq "False") {
-  #   Remove-Item 'D:\temp\Test Folder' -Recurse
+  #   Remove-Item '$($folder.fullAddress)' -Recurse
   # }
     
   # Check if folder is too large
