@@ -44,7 +44,7 @@ foreach ($i in $listOfObj) {
   % {
     $i.enabled = $_.Enabled
     $i.emailAddress = $_.mail
-    $i.lastLogonDate = $_.LastLogonDate
+    $i.lastLogonDate = $_.lastLogonTimestamp
   }
     
   # DELETES FILES IF THE USER IS DISABLED
