@@ -50,11 +50,10 @@ foreach ($i in $listOfObj) {
   }
     
   # DELETES FILES IF THE USER IS DISABLED AND HAS NOT LOGGED ON IN TWO MONTHS
-  #
-  # if ($i.lastLogonTimestamp -lt $dateTwoMonthsAgo ) -and
-  # ($i.enabled -eq "False") {
-  #   Remove-Item '$($folder.fullAddress)' -Recurse
-  # }
+  if (($i.lastLogonTimestamp -lt $dateTwoMonthsAgo ) -and ($i.enabled -eq "False")) {
+    # Remove-Item '$($folder.fullAddress)' -Recurse
+    echo $folder.folderName
+  }
     
   # Check if folder is too large
   if($i.folderSize -gt $maxSize) { $i.too_large = "True" }
