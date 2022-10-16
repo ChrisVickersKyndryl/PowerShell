@@ -58,7 +58,7 @@ foreach ($i in $listOfObj) {
   Get-ADUser -Filter "Name -eq '$($i.folderName)'" -Properties * <#-SearchBase "DC=AppNC"#> | % {
     $i.enabled = $_.Enabled
     $i.emailAddress = $_.mail
-    $i.lastLogonDate = $_.lastLogonDate
+    $i.lastLogonDate = [string]$_.lastLogonDate
     $i.lastLogonTimestamp = $_.lastLogonTimestamp
   }
     
