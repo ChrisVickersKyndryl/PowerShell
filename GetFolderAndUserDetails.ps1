@@ -45,6 +45,7 @@ foreach ($i in $listOfObj) {
     $i.lastLogonDate = [string]$_.lastLogonDate
     # $i.lastLogonDateUnixTimeSeconds = $_.lastLogonDate.ToUnixTimeSeconds()
     $i.lastLogonTimestamp = $_.lastLogonTimestamp
+    $i.too_large = "False"
   }
     
   # DELETES FILES IF THE USER IS DISABLED AND HAS NOT LOGGED ON IN TWO MONTHS
@@ -55,10 +56,7 @@ foreach ($i in $listOfObj) {
   # }
     
   # Check if folder is too large
-  if($i.folderSize -gt $maxSize)
-    { $i.too_large = "True" }
-  else
-    { $i.too_large = "False" }
+  if($i.folderSize -gt $maxSize) { $i.too_large = "True" }
 }
 
 # Empty recycle bin
