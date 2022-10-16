@@ -15,6 +15,9 @@ $excludedFolders = @(
   "Default User"
 )
 
+# Set
+$cutoffDate = $(Get-Date -Date "2020-01-01T00:00:00")
+
 #Get date time now as unix seconds
 $timeNow = ([DateTimeOffset]$(Get-Date)).ToUnixTimeSeconds()
 echo $timeNow
@@ -59,6 +62,7 @@ foreach ($i in $listOfObj) {
     $i.enabled = $_.Enabled
     $i.emailAddress = $_.mail
     $i.lastLogonDate = [string]$_.lastLogonDate
+    $i.lastLogonDateUnix = [string]$_.lastLogonDate
     $i.lastLogonTimestamp = $_.lastLogonTimestamp
   }
     
