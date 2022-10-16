@@ -64,6 +64,8 @@ foreach ($i in $listOfObj) {
     { $i.too_large = "False" }
 }
 
+# Empty recycle bin
+
 # Output response as json
 $vmJson = $listOfObj | ConvertTo-Json
 Write-Output $vmJson
