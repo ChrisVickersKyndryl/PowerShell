@@ -17,6 +17,7 @@ $excludedFolders = @(
 
 # Set
 $cutoffDate = $(Get-Date -Date "2020-01-01T00:00:00")
+echo $cutoffDate
 
 #Get date time now as unix seconds
 $timeNow = ([DateTimeOffset]$(Get-Date)).ToUnixTimeSeconds()
