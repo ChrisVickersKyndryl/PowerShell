@@ -15,6 +15,8 @@ $excludedFolders = @(
   "Default User"
 )
 
+# -------------------------------------------------------------------------------------------------
+
 # Set
 $cutoffDate = $(Get-Date -Date "2020-01-01T00:00:00")
 echo $cutoffDate
@@ -34,6 +36,14 @@ else
 {
   echo "Was not bigger"
 }
+
+# -------------------------------------------------------------------------------------------------
+
+
+
+
+# This gets the current time as a string
+[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
 
 # Check if module exists. If it does not, exit
 if (!(Get-Module -ListAvailable -Name ActiveDirectory))
@@ -63,7 +73,7 @@ foreach ($i in $listOfObj) {
     $i.enabled = $_.Enabled
     $i.emailAddress = $_.mail
     $i.lastLogonDate = [string]$_.lastLogonDate
-    $i.lastLogonDateUnixTimeSeconds = $_.lastLogonDate.ToUnixTimeSeconds()
+    # $i.lastLogonDateUnixTimeSeconds = $_.lastLogonDate.ToUnixTimeSeconds()
     $i.lastLogonTimestamp = $_.lastLogonTimestamp
   }
     
