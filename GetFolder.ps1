@@ -15,35 +15,8 @@ $excludedFolders = @(
   "Default User"
 )
 
-# -------------------------------------------------------------------------------------------------
-
-# Set
-$cutoffDate = $(Get-Date -Date "2020-01-01T00:00:00")
-echo $cutoffDate
-
-#Get date time now as unix seconds
-$timeNow = ([DateTimeOffset]$(Get-Date)).ToUnixTimeSeconds()
-echo $timeNow
-
-$secondsPast = ([DateTimeOffset]$(Get-Date).AddMonths(-2)).ToUnixTimeSeconds()
-echo $secondsPast
-
-if($timeNow -lt $secondsPast)
-{
-  echo "Was bigger"
-}
-else
-{
-  echo "Was not bigger"
-}
-
-# -------------------------------------------------------------------------------------------------
-
-
-
-
 # This gets the current time as a string
-[DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+$dateTwoMonthsAgo = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
 
 # Check if module exists. If it does not, exit
 if (!(Get-Module -ListAvailable -Name ActiveDirectory))
@@ -77,8 +50,9 @@ foreach ($i in $listOfObj) {
     $i.lastLogonTimestamp = $_.lastLogonTimestamp
   }
     
-  # DELETES FILES IF THE USER IS DISABLED AND LAST LOGGED ON LONGER THAN 2 MONTHS AGO
-  # if ($i.lastLogonTimestamp - lt ([DateTimeOffset]$(Get-Date).AddMonths(-2)).ToUnixTimeSeconds() ) -and
+  # DELETES FILES IF THE USER IS DISABLED AND HAS NOT LOGGED ON IN TWO MONTHS
+  #
+  # if ($i.lastLogonTimestamp -lt $dateTwoMonthsAgo ) -and
   # ($i.enabled -eq "False") {
   #   Remove-Item 'D:\temp\Test Folder' -Recurse
   # }
