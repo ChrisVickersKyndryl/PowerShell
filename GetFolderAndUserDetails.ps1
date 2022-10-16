@@ -28,6 +28,7 @@ Where-Object { $_.Name -notin $excludedFolders } |
 ? { $_ -is [io.directoryinfo] } | % {
   $len = 0
   gci -recurse -force $_.fullname -ErrorAction SilentlyContinue | % { $len += $_.length }
+  
   $folder = @{}
   $folder.folderName = $_.Name
   $folder.Name = $_.Name
