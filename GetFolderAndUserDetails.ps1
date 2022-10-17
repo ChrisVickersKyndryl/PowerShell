@@ -12,7 +12,7 @@ $maxSize = 20000000
 #Excluded folders. These folders will not be checked
 $excludedFolders = @(
   "All Users",
-  # "Administrator",
+  "Administrator",
   "Default",
   "Public",
   "Default User"
