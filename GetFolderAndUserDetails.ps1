@@ -63,5 +63,6 @@ foreach ($i in $listOfObj) {
 }
 
 # Output response as json
+# https://www.jonathanmedd.net/2019/07/returning-data-from-powershell-scripts-to-be-consumed-by-ansible-playbook
 $vmJson = $listOfObj | ConvertTo-Json
 Write-Output $vmJson
