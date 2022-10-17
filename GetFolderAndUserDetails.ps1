@@ -53,7 +53,7 @@ foreach ($i in $listOfObj) {
   # - Checks if last logon was longer than 2 months ago
   # - Checks last logon is not null (a number)
   # - Checks enabled is "False"
-  if (($i.lastLogonTimestamp -lt $dateTwoMonthsAgo ) -and ($i.lastLogonTimestamp -ne $null) -and ($i.enabled -eq "False")) {
+  if (($i.lastLogonTimestamp -lt $dateTwoMonthsAgo) -and ($i.lastLogonTimestamp -ne $null) -and ($i.enabled -eq "False")) {
     # Remove - Item '$($i.fullAddress)' -Recurse
     Write-Host "To clear: Y, Folder: " $i.folderName ", Enabled: " $i.enabled ", Last login: "  $i.lastLogonDate  
   }
