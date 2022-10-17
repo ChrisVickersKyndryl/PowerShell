@@ -40,7 +40,7 @@ Where-Object { $_.Name -notin $excludedFolders } |
 # Loop through list of folders
 foreach ($i in $listOfObj) {
   # Get user that matches the folder name
-  Get-ADUser -Filter "Name -eq '$($i.folderName)'" -Properties * <#-SearchBase "DC=AppNC"#> | % {
+  Get-ADUser -Filter "SamAccountName -eq '$($i.folderName)'" -Properties * <#-SearchBase "DC=AppNC"#> | % {
     $i.enabled = $_.Enabled
     $i.emailAddress = $_.mail
     $i.lastLogonDate = [string]$_.lastLogonDate
