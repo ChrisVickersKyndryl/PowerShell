@@ -20,7 +20,7 @@ $excludedFolders = @(
 
 # This gets the current time as a string that can be compared to the time returned from AD
 $dateTwoMonthsAgo = ((Get-Date).AddMonths(-2)).tofiletime()
-echo $dateTwoMonthsAgo
+Write-Host "Date two months ago (Windows timestamp): " $dateTwoMonthsAgo
 
 # Get folder size and name
 gci -force 'C:\Users'-ErrorAction SilentlyContinue |
