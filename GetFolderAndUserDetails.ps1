@@ -55,7 +55,11 @@ foreach ($i in $listOfObj) {
   # - Checks enabled is "False"
   if (($i.lastLogonTimestamp -lt $dateTwoMonthsAgo ) -and ($i.lastLogonTimestamp -not $null) -and ($i.enabled -eq "False")) {
     # Remove - Item '$($i.fullAddress)' -Recurse
-    echo $i.folderName   
+    Write-Host -NoNewline "Not to clear :" $i.folderName   
+  }
+  else
+  {
+       Write-Host -NoNewline "Clear :" $i.folderName  
   }
     
   # Check if folder is too large
