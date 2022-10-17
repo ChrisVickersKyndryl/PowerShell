@@ -45,14 +45,15 @@ foreach ($i in $listOfObj) {
     $i.emailAddress = $_.mail
     $i.lastLogonDate = [string]$_.lastLogonDate
     # $i.lastLogonDateUnixTimeSeconds = $_.lastLogonDate.ToUnixTimeSeconds()
-    $i.lastLogonTimestamp = [int64]$_.lastLogonTimestamp
+    $i.lastLogonTimestamp = $_.lastLogonTimestamp
     $i.too_large = "False"
   }
     
   # DELETES FILES IF THE USER IS DISABLED AND HAS NOT LOGGED ON IN TWO MONTHS
   # - Checks if last logon was longer than 2 months ago
-  # - Checks last logon is a number ()
-  if (($i.lastLogonTimestamp -lt $dateTwoMonthsAgo ) -and ($i.lastLogonTimestamp -is [int64]) -and ($i.enabled -eq "False")) {
+  # - Checks last logon is not null (a number)
+  # - Checks enabled is "False"
+  if (($i.lastLogonTimestamp -lt $dateTwoMonthsAgo ) -and ($i.lastLogonTimestamp -not $null) -and ($i.enabled -eq "False")) {
     # Remove - Item '$($i.fullAddress)' -Recurse
     echo $i.folderName   
   }
