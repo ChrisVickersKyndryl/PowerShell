@@ -66,6 +66,9 @@ foreach ($i in $listOfObj) {
   if($i.folderSize -gt $maxSize) { $i.too_large = "True" }
 }
 
+Write-Host ""
+Write-Host ""
+
 # Output response as json
 # https://www.jonathanmedd.net/2019/07/returning-data-from-powershell-scripts-to-be-consumed-by-ansible-playbook
 $vmJson = $listOfObj | ConvertTo-Json
