@@ -27,6 +27,9 @@ $server.freespace = [int](Get-CimInstance -ClassName Win32_LogicalDisk -Filter '
 # Get total size
 $server.total_size =  [int](Get-CimInstance -ClassName Win32_LogicalDisk -Filter 'DeviceId = "C:"' | Select @{'Name' = 'Size'; Expression= { [int]($_.Size / 1GB) }} | Select Size -ExpandProperty Size -first 1)
 
+# Get percentage of server space free
+$server.percent_free = [string](get-psdrive c | % { $_.free/($_.used + $_.free) } | % tostring p)
+
 # This gets the current time as a string that can be compared to the time returned from AD
 $dateTwoMonthsAgo = ((Get-Date).AddMonths(-2)).tofiletime()
 # Write-Host "Date two months ago (Windows timestamp): " $dateTwoMonthsAgo
