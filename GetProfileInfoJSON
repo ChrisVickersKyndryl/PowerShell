@@ -22,10 +22,10 @@ $server = @{}
 $server.hostname = $env:computername
 
 # Get free space on server
-$server.freespace = [int](Get-CimInstance -ClassName Win32_LogicalDisk | Select @{'Name' = 'FreeSpace'; Expression= { [int]($_.FreeSpace / 1GB) }} | Select FreeSpace -ExpandProperty FreeSpace -first 1)
+$server.freespace = [int](Get-CimInstance -ClassName Win32_LogicalDisk -Filter 'DeviceId = "C:"' | Select @{'Name' = 'FreeSpace'; Expression= { [int]($_.FreeSpace / 1GB) }} | Select FreeSpace -ExpandProperty FreeSpace -first 1)
 
 # Get total size
-$server.total_size =  [int](Get-CimInstance -ClassName Win32_LogicalDisk | Select @{'Name' = 'Size'; Expression= { [int]($_.Size / 1GB) }} | Select Size -ExpandProperty Size -first 1)
+$server.total_size =  [int](Get-CimInstance -ClassName Win32_LogicalDisk -Filter 'DeviceId = "C:"' | Select @{'Name' = 'Size'; Expression= { [int]($_.Size / 1GB) }} | Select Size -ExpandProperty Size -first 1)
 
 # This gets the current time as a string that can be compared to the time returned from AD
 $dateTwoMonthsAgo = ((Get-Date).AddMonths(-2)).tofiletime()
