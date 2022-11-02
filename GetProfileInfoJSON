@@ -30,6 +30,9 @@ $server.total_size =  [int](Get-CimInstance -ClassName Win32_LogicalDisk -Filter
 # Get percentage of server space free
 $server.percent_free = [string](get-psdrive c | % { $_.free/($_.used + $_.free) } | % tostring p)
 
+# Initialize variable to hold total size of files that can be delete
+$server.folders_to_delete_size = 0
+
 # This gets the current time as a string that can be compared to the time returned from AD
 $dateTwoMonthsAgo = ((Get-Date).AddMonths(-2)).tofiletime()
 # Write-Host "Date two months ago (Windows timestamp): " $dateTwoMonthsAgo
@@ -66,7 +69,8 @@ foreach ($i in $listOfObj) {
   ($i.lastLogonTimestamp -ne $null) -and                # - Checks last logon is not null (a number)
   ($i.enabled -eq "False")                              # - Checks enabled is "False"
   ) {
-    $i.to_delete = $true 
+    $i.to_delete = $true
+    $server.folders_to_delete_size = $server.folders_to_delete_size + [int64]$i.folderSize
   }
   else {
     $i.to_delete = $false 
