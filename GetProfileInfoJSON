@@ -60,18 +60,16 @@ foreach ($i in $listOfObj) {
     $i.lastLogonTimestamp = $_.lastLogonTimestamp
   }
     
-  # DELETES FILES IF THE USER IS DISABLED AND HAS NOT LOGGED ON IN TWO MONTHS
-  # - Checks if last logon was longer than 2 months ago
-  # - Checks last logon is not null (a number)
-  # - Checks enabled is "False"
-  if (($i.lastLogonTimestamp -lt $dateTwoMonthsAgo) -and ($i.lastLogonTimestamp -ne $null) -and ($i.enabled -eq "False")) {
-    $i.to_delete = $true
-    # Write-Host "To clear: Y, Folder: " $i.folderName ", Enabled: " $i.enabled ", Last login: "  $i.lastLogonDate  
+  # Give summary of whether user profile can be deleted
+  if (
+  ($i.lastLogonTimestamp -lt $dateTwoMonthsAgo) -and    # - Checks if last logon was longer than 2 months ago
+  ($i.lastLogonTimestamp -ne $null) -and                # - Checks last logon is not null (a number)
+  ($i.enabled -eq "False")                              # - Checks enabled is "False"
+  ) {
+    $i.to_delete = $true 
   }
-  else
-  {
-    $i.to_delete = $false
-    # Write-Host "To clear: N, Folder: " $i.folderName ", Enabled: " $i.enabled ", Last login: "  $i.lastLogonDate  
+  else {
+    $i.to_delete = $false 
   }
 }
 
