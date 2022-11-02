@@ -62,12 +62,12 @@ foreach ($i in $listOfObj) {
   # - Checks last logon is not null (a number)
   # - Checks enabled is "False"
   if (($i.lastLogonTimestamp -lt $dateTwoMonthsAgo) -and ($i.lastLogonTimestamp -ne $null) -and ($i.enabled -eq "False")) {
-    $i.to_delete = $true
+    $i.to_delete = True
     # Write-Host "To clear: Y, Folder: " $i.folderName ", Enabled: " $i.enabled ", Last login: "  $i.lastLogonDate  
   }
   else
   {
-    $i.to_delete = $false
+    $i.to_delete = False
     # Write-Host "To clear: N, Folder: " $i.folderName ", Enabled: " $i.enabled ", Last login: "  $i.lastLogonDate  
   }
 }
