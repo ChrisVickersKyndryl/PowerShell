@@ -128,7 +128,7 @@ function Set-CondensedUser{
 function Set-ManagerValues{
   # Popullate manager display name and email address
   # Go through each server
-  foreach ($usr in $condensedUsers)
+  foreach ($usr in $condensedUsers.GetEnumerator())
   {
     # Check if manager exists
     if($condensedUsers.ContainsKey($usr.Manager))
