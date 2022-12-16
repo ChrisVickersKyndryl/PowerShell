@@ -6,6 +6,8 @@
 
 #Create class of a user from AD
 class User {
+  [string]$dc = ""
+
   [string]$FirstName = ""
   [string]$LastName = ""
   [string]$DisplayName = ""
@@ -51,19 +53,19 @@ function Get-UsersFromAllServers {
     param (
         $dcs
     )
-    $allUsers = @()
+    $allUsers = @{}
     foreach ($dc in $dcs) {
         # Check connectivity to the server. If no connection, go to next server
-        if (-Not (Test-Connection -TargetName $dc -Quiet)) { continue }
+        if (-Not (Test-Connection -ComputerName $dc -Quiet)) { continue }
 
         # Create dictionary to store data
-        $usersFromDC = New-Object System.Collections.Generic.Dictionary"[String,User]"
+        $usersFromDC = @{}
 
         # Create credential to run the Get-ADUser command as.
         $credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $userName, $password
 
         # Get all users from DC and add to list
-        Get-ADUser -Server $dc - Filter * -Credential $credential | Select-Object -Property * | % {
+        Get-ADUser -Server $dc -Filter * -Credential $credential | Select-Object -Property * | % {
             $ind = [User]::new()
             # Distinguished name is used as the Key in the dictionary
             $ind.DistinguishedName = $_.DistinguishedName
@@ -80,11 +82,11 @@ function Get-UsersFromAllServers {
             $ind.dc = $dc
 
             # Add the user to the main dictionary
-            $usersFromDC.Add($_.DistinguishedName, $ind)
+            $usersFromDC.Add($ind.DistinguishedName, $ind)
         }
 
         # Add all users to the list of restuls
-        $allUsers += $usersFromDC
+        $allUsers.Add($dc, $usersFromDC)
     }
     return $allUsers
 }
@@ -95,24 +97,24 @@ function Set-CondensedUser{
     )
 
     # Create a summary list of all users
-    $condensedUsers = New-Object System.Collections.Generic.Dictionary"[String,User]"
+    $condensedUsers = @{}
 
     # Go through each server
-    foreach ($singleServer in $allUsers)
+    foreach ($singleServer in $allUsers.GetEnumerator())
     {
         # Go through each file from that server
-        foreach ($usr in $singleServer)
+        foreach ($usr in $singleServer.GetEnumerator())
         {
             # If value doesnt exist add it
-            if(-Not ($condensedUsers.ContainsKey($usr.Value.DistinguishedName)))
+            if(-Not ($condensedUsers.ContainsKey($usr.DistinguishedName)))
             {
                 # If the value doesnt exist, add it
-                $condensedUsers.Add($usr.Value.DistinguishedName, $usr.Value)
+                $condensedUsers.Add($usr.DistinguishedName, $usr.Value)
                 continue
             }
 
             # Check if the user data is more recent, if so, replace the current value
-            if($condensedUsers[$usr.DistinguishedName].lastLogon -lt $usr.Value.lastLogon)
+            if($condensedUsers[$usr.DistinguishedName].lastLogon -lt $usr.lastLogon)
             {
                 $condensedUsers[$usr.DistinguishedName] = $usr.Value
             }
@@ -129,11 +131,12 @@ function Set-ManagerValues{
   foreach ($usr in $condensedUsers)
   {
     # Check if manager exists
-    if($condensedUsers.ContainsKey($usr.Value.Manager))
+    if($condensedUsers.ContainsKey($usr.Manager))
     {
+      Write-Host $usr.Manager
       # Get managers values
-      $usr.Value.ManagerDisplayName = $condensedUsers[$usr.Value.Manager].DisplayName
-      $usr.Value.ManagerEmail = $condensedUsers[$usr.Value.Manager].EmailAddress
+      $usr.ManagerDisplayName = $condensedUsers[$usr.Manager].DisplayName
+      $usr.ManagerEmail = $condensedUsers[$usr.Manager].EmailAddress
     }
   }
 }
@@ -143,6 +146,9 @@ $dcs = Get-AllDomainControllers
 
 # Get the users from each domain controller
 $allUsers = Get-UsersFromAllServers -dcs $dcs
+
+Write-Host "Number of values"
+Write-Host $allUsers.Count
 
 #Combine the users into a summary file
 $condensedUsers = Set-CondensedUser -allUsers $allUsers
