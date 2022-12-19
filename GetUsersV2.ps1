@@ -20,17 +20,17 @@ class User {
 }
 
 # All domain controllers
-$dcs = @()
+$global:dcs = @()
 
 # List of dictionaries used to store the users from each domain controller
-$allUsers = @{}
+$global:allUsers = @{}
 
 # Single list of all users, created from the multiple lists of users recieved from all servers
-$condensedUsers = @{}
+$global:condensedUsers = @{}
 
 # Create credentials to run the command as. Username and password - THESE ARE REPLACED IN ANSIBLE
-$username = '$USERNAME$'
-$password = ConvertTo-SecureString -String '$PASSWORD$' -AsPlainText -Force
+$global:username = '$USERNAME$'
+$global:password = ConvertTo-SecureString -String '$PASSWORD$' -AsPlainText -Force
 
 
 #Return a list of domain controllers
@@ -40,7 +40,7 @@ function Get-AllDomainControllers {
 
     # Get all domain controllers and export list
     Get-ADDomainController -Filter * -Credential $credential | select hostname | % {
-        $dcs += $_.Hostname
+        $global:dcs += $_.Hostname
     }
 }
 
@@ -77,50 +77,41 @@ function Get-UserFromSingleServer{
     }
 
     # Add all users to the list of restuls
-    $allUsers.Add($dc, $usersFromDC)
+    $global:allUsers.Add($dc, $usersFromDC)
 }
 
 # Run a number of jobs in parallel to get all AD users values from all the domain controllers
 function Get-UsersFromAllServers {
     # Go through each server and crate a job to get the information
-    foreach ($dc in $dcs) {
+    foreach ($dc in $global:dcs) {
         # Check connectivity to the server. If no connection, go to next server
         if (-Not (Test-Connection -ComputerName $dc -Quiet)) { continue }
 
-        # Create job to get details
-        start-job -ScriptBlock {
-            #Run the job to get a single server
-            Get-UserFromSingleServer -dc $dc
-        } | Out-Null
+        # Get users from each server
+        Get-UserFromSingleServer -dc $dc
     }
-
-    # Wait 10 seconds to ensure that all jobs have started
-    # sleep 10
-
-    # Wait for all jobs to finish
-    Get-Job | Wait-Job | Out-Null
 }
 
 # Combine all the records received from all the domain controllers and condense it to a single list of records
 function Set-CondensedUser{
     # Go through each server
-    foreach ($singleServer in $allUsers.Values)
+    foreach ($singleServer in $global:allUsers.Values)
     {
         # Go through each file from that server
         foreach ($usr in $singleServer.Values)
         {
             # If value doesnt exist add it
-            if(-Not ($condensedUsers.ContainsKey($usr.DistinguishedName)))
+            if(-Not ($global:condensedUsers.ContainsKey($usr.DistinguishedName)))
             {
                 # If the value doesnt exist, add it
-                $condensedUsers.Add($usr.DistinguishedName, $usr)
+                $global:condensedUsers.Add($usr.DistinguishedName, $usr)
                 continue
             }
 
             # Check if the user data is more recent, if so, replace the current value
             if($condensedUsers[$usr.DistinguishedName].lastLogon -lt $usr.lastLogon)
             {
-                $condensedUsers[$usr.DistinguishedName] = $usr.Value
+                $global:condensedUsers[$usr.DistinguishedName] = $usr.Value
             }
         }
     }
@@ -130,16 +121,16 @@ function Set-CondensedUser{
 function Set-ManagerValues{
   # Popullate manager display name and email address
   # Go through each server
-  foreach ($usr in $condensedUsers.Values)
+  foreach ($usr in $global:condensedUsers.Values)
   {
     #$usr | ConvertTo-Json
 
     # Check if manager exists
-    if($condensedUsers.ContainsKey($usr.Manager))
+    if($global:condensedUsers.ContainsKey($usr.Manager))
     {
       # Get managers values
-      $usr.ManagerDisplayName = $condensedUsers[$usr.Manager].DisplayName
-      $usr.ManagerEmail = $condensedUsers[$usr.Manager].EmailAddress
+      $usr.ManagerDisplayName = $global:condensedUsers[$usr.Manager].DisplayName
+      $usr.ManagerEmail = $global:condensedUsers[$usr.Manager].EmailAddress
     }
   }
 }
@@ -153,21 +144,6 @@ Get-AllDomainControllers
 # Get the users from each domain controller
 Get-UsersFromAllServers
 
-# Write-Host "Number of values"
-# Write-Host $allUsers.Count
-
-#$allUsers | ConvertTo-Json
-
-#foreach ($server in $allUsers.Values)
-#{
-#  $server.Values | ConvertTo-Json
-#  
-#  foreach ($rec in $server.Values)
-#  {
-#    Write-Host $rec.DistinguishedName
-#  }  
-#}
-
 # Combine the users into a summary file
 Set-CondensedUser
 
@@ -177,4 +153,4 @@ Set-ManagerValues
 # Output CSV Value
 $condensedUsers.Values | ConvertTo-csv -NoTypeInformation
 
-$condensedUsers.Values | ConvertTo-Json
+# $condensedUsers.Values | ConvertTo-Json
