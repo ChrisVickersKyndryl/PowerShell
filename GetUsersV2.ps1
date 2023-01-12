@@ -15,7 +15,17 @@ class User {
   [string]$ManagerDisplayName = ""
   [string]$ManagerEmail = ""
   [string]$LastLogonDate = ""
-
+  
+  [string]$Office = ""
+  [string]$Title = ""
+  [string]$logonCount = ""
+  [string]$lastLogonTimestamp = ""
+  [string]$Enabled = ""
+  [string]$PasswordExpired = ""
+  [string]$PasswordLastSet = ""
+  [string]$PasswordNeverExpires = ""
+  [string]$mail = ""
+ 
   [Int64]$lastLogon = 0
 }
 
@@ -28,18 +38,10 @@ $global:allUsers = @{}
 # Single list of all users, created from the multiple lists of users recieved from all servers
 $global:condensedUsers = @{}
 
-# Create credentials to run the command as. Username and password - THESE ARE REPLACED IN ANSIBLE
-$global:username = '$USERNAME$'
-$global:password = ConvertTo-SecureString -String '$PASSWORD$' -AsPlainText -Force
-
-
 #Return a list of domain controllers
 function Get-AllDomainControllers {
-    # Create user credential to run command as
-    $credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $userName, $password
-
     # Get all domain controllers and export list
-    Get-ADDomainController -Filter * -Credential $credential | select hostname | % {
+    Get-ADDomainController -Filter * | select hostname | Select-Object -first 2 | % {
         $global:dcs += $_.Hostname
     }
 }
@@ -53,24 +55,32 @@ function Get-UserFromSingleServer{
     # Create dictionary to store data
     $usersFromDC = @{}
 
-    # Create user credential to run command as
-    $credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $userName, $password
-
     # Get all users from DC and add to list
-    Get-ADUser -Server $dc -Filter * -Credential $credential -Properties * | % {
+    Get-ADUser -Server $dc -Filter * -Properties * | % {
         $ind = [User]::new()
         # Distinguished name is used as the Key in the dictionary
         $ind.DistinguishedName = $_.DistinguishedName
 
         #Standard values
-        $ind.DisplayName = $_.DisplayName
-        $ind.FirstName = $_.Name
-        $ind.Sid = $_.Sid
-        $ind.Manager = $_.Manager
+        $ind.DisplayName = [string]$_.DisplayName
+        $ind.FirstName = [string]$_.Name
+        $ind.Sid = [string]$_.Sid
+        $ind.Manager = [string]$_.Manager
         $ind.lastLogon = [Int64]$_.lastLogon
-        $ind.LastLogonDate = $_.LastLogonDate
-        $ind.EmailAddress = $_.EmailAddress
-        $ind.dc = $dc # Domain controller this value was taken from
+        $ind.LastLogonDate = [string]$_.LastLogonDate
+        $ind.EmailAddress = [string]$_.EmailAddress
+        $ind.dc = [string]$dc # Domain controller this value was taken from
+
+        # Just added
+        #$ind.Office = [string]$_.Office
+        #$ind.Title = [string]$_.Title
+        #$ind.logonCount = [string]$_.logonCount
+        #$ind.lastLogonTimestamp = [string]$_.lastLogonTimestamp
+        #$ind.Enabled = [string]$_.Enabled
+        #$ind.PasswordExpired = [string]$_.PasswordExpired
+        #$ind.PasswordLastSet = [string]$_.PasswordLastSet
+        #$ind.PasswordNeverExpires = [string]$_.PasswordNeverExpires
+        #$ind.mail = [string]$_.mail
 
         # Add the user to the main dictionary
         $usersFromDC.Add($ind.DistinguishedName, $ind)
@@ -120,10 +130,17 @@ function Set-CondensedUser{
 # Set the manager values by extracting them from the 
 function Set-ManagerValues{
   # Popullate manager display name and email address
+ 
+
   # Go through each server
   foreach ($usr in $global:condensedUsers.Values)
   {
-    #$usr | ConvertTo-Json
+    # If the manager is null, set values to show no manager listed and then skip it 
+    if (!$usr.Manager -eq "") {
+      $usr.ManagerDisplayName = "No manager listed"
+      $usr.ManagerEmail = "No manager listed"
+      continue 
+    }
 
     # Check if manager exists
     if($global:condensedUsers.ContainsKey($usr.Manager))
