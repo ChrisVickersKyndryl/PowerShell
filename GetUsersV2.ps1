@@ -136,7 +136,7 @@ function Set-ManagerValues{
   foreach ($usr in $global:condensedUsers.Values)
   {
     # If the manager is null, set values to show no manager listed and then skip it 
-    if (!$usr.Manager -eq "") {
+    if ($usr.Manager -ne "") {
       $usr.ManagerDisplayName = "No manager listed"
       $usr.ManagerEmail = "No manager listed"
       continue 
