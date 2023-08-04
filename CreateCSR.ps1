@@ -28,3 +28,6 @@ $INF | out-file -filepath $INFPath -force
 certreq -new $INFPath $CSRPath
 
 Write-Host $(Get-Content -Path $CSRPath)
+
+Remove-Item $INFPath
+Remove-Item $CSRPath
