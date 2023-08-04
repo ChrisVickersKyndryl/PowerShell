@@ -1,5 +1,3 @@
-Write-Host "Creating CertificateRequest(CSR) for $CertName `r "
-Invoke-Command -ComputerName testbox -ScriptBlock {
 $CertName = "newcert.contoso.com"
 $CSRPath = "c:\temp\$($CertName)_.csr"
 $INFPath = "c:\temp\$($CertName)_.inf"
@@ -25,8 +23,8 @@ KeyUsage = 0xa0
 [EnhancedKeyUsageExtension]
 OID=1.3.6.1.5.5.7.3.1 
 "@
-write-Host "Certificate Request is being generated `r "
+
 $INF | out-file -filepath $INFPath -force
 certreq -new $INFPath $CSRPath
-}
-write-output "Certificate Request has been generated"
+
+Write-Host $(Get-Content -Path $CSRPath)
